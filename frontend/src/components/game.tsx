@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Container, Row, Col } from "react-grid";
+import { sendStartNewGame, sendScore } from "../controller/AppController";
 
 enum IWeaponMap {
   S = "Scissors",
@@ -18,6 +19,15 @@ interface MyState {
 }
 
 export default class Game extends React.Component<any, MyState> {
+  componentDidUpdate(prevProps, prevState) { 
+    if (
+      prevState.wins !== this.state.wins ||
+      prevState.lost !== this.state.lost
+    ) {
+      sendScore(this.state.wins, this.state.lost);
+    }
+  }
+
   public constructor(props: any) {
     super(props);
     this.state = {
@@ -85,20 +95,24 @@ export default class Game extends React.Component<any, MyState> {
       <div>
         {!this.state.startNewGame && this.state.selectedWeapon === undefined ? (
           <div>
-            <button onClick={() => this.setState({ startNewGame: true })}>
+            <button
+              onClick={() => {
+                sendStartNewGame();
+                this.setState({ startNewGame: true });
+              }}
+            >
               Start New Game
             </button>
           </div>
         ) : this.state.selectedWeapon === undefined ? (
           <div>
-            <Container>
+            <Container key={'key-cont'}>
               <b> Select your Weapon!</b>
               <Row>
-                {this.weapons.map((item: IWeaponMap, index) => {
-                  return (
-                    <div>
-                      <Col>
-                        <button
+                {this.weapons.map((item: IWeaponMap, index:number) => {
+                  return ( 
+                      <Col key={'key-col-'+ index}>
+                        <button key={'key-button-'+ index}
                           onClick={() => {
                             this.setState({ selectedWeapon: item });
                             this.handleOnClickSelectWeapon(item);
@@ -106,8 +120,7 @@ export default class Game extends React.Component<any, MyState> {
                         >
                           {item}
                         </button>
-                      </Col>
-                    </div>
+                      </Col> 
                   );
                 })}
               </Row>
@@ -123,17 +136,21 @@ export default class Game extends React.Component<any, MyState> {
                 </div>
                 <div>
                   Your Weapon:
-                  <b style={{ color: "yellow" }}> {this.state.selectedWeapon}</b>
+                  <b style={{ color: "yellow" }}>
+                    {" "}
+                    {this.state.selectedWeapon}
+                  </b>
                 </div>
                 <div>{this.state.result}</div>
               </div>
               <button
-                onClick={() =>
+                onClick={() => {
+                  sendStartNewGame();
                   this.setState({
                     selectedWeapon: undefined,
                     startNewGame: true,
-                  })
-                }
+                  });
+                }}
               >
                 Start New Game
               </button>
