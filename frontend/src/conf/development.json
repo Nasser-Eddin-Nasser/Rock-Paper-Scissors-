@@ -1,0 +1,7 @@
+{
+    "apiServer": {
+        "port": 5005,
+        "protocol": "http",
+        "host": "localhost"
+    }
+}
