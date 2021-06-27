@@ -5,44 +5,37 @@ export default class GameAPI {
     static sendStartNewGame() {
         const url = `${apiServer.protocol}://${apiServer.host}:${apiServer.port}/api/controller/startNewGame`;
         fetch(url, {
-            method: 'POST'
-        }).then(async (response) => {
-            const data = await response.json();
-            // check for error response
-            if (!response.ok) { 
-                // get error message from body or default to response status
-                const error = (data && data.message) || response.status;
-                return Promise.reject(error);
-            } else {
-                console.log("Request complete!");
-                console.log("Response: " + data);
+            method: 'GET',
+            headers: {
+                "Content-Type": "text/plain"
             }
 
-        }).catch((error) => {
-            console.log(error);
-        });
+        }).then(response => response.text().then(function (text) {
+            console.log(text);
+        }))
+            .catch((error) => {
+                console.log(error);
+            });
     }
 
     static async sendScore(wins: Number, lost: Number) {
         const url = `${apiServer.protocol}://${apiServer.host}:${apiServer.port}/api/controller/score`;
         fetch(url, {
             method: 'POST',
-            body: JSON.stringify({ "wins": wins, "lost": lost })
-        }).then(async (response) => {
-            const data = await response.json();
-            // check for error response
-            if (!response.ok) {
-                // get error message from body or default to response status
-                const error = (data && data.message) || response.status;
-                return Promise.reject(error);
-            } else {
-                console.log("Request complete!");
-                console.log("Response: " + data);
-            }
-        }).catch((error) => {
-            console.log(error);
-        });
-
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ wins: wins, lost: lost })
+        })
+            .then(function (response) { return response.json(); })
+            .then(function (json) {
+                console.log(json);
+            })
+            .catch((error) => {
+                console.log("4")
+                console.log(error);
+            });
 
     }
 }

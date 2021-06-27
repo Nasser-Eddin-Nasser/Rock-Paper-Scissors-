@@ -1,10 +1,10 @@
 import * as React from "react";
 import { Container, Row, Col } from "react-grid";
-import GameAPI  from "../api/gameAPI";
-enum IResult{
-  Win="You are the Winner!",
-  Draw="Draw!",
-  lose="Looser!"
+import GameAPI from "../api/gameAPI";
+enum IResult {
+  Win = "You are the Winner!",
+  Draw = "Draw!",
+  lose = "Looser!",
 }
 
 enum IWeaponMap {
@@ -24,7 +24,7 @@ interface MyState {
 }
 
 export default class Game extends React.Component<any, MyState> {
-  componentDidUpdate(prevProps, prevState) { 
+  componentDidUpdate(prevProps, prevState) {
     if (
       prevState.wins !== this.state.wins ||
       prevState.lost !== this.state.lost
@@ -94,100 +94,105 @@ export default class Game extends React.Component<any, MyState> {
     var randomIndex = Math.floor(Math.random() * this.weapons.length);
     return this.weapons[randomIndex];
   }
-  private weapons: IWeaponMap[] = [IWeaponMap.R, IWeaponMap.P, IWeaponMap.S]; 
+  private weapons: IWeaponMap[] = [IWeaponMap.R, IWeaponMap.P, IWeaponMap.S];
 
   public render(): JSX.Element {
     return (
       <div>
         {!this.isGameStarted() ? (
-          <div>
-            {this.renderStartGameButton()}
-          </div>
-        ) : ! this.isWeaponSelected() ? (
-          <div>
-            {this.renderSelectWeapon()}
-          </div>
-        ) : ( 
-            this.renderResult() 
+          <div>{this.renderStartGameButton()}</div>
+        ) : !this.isWeaponSelected() ? (
+          <div>{this.renderSelectWeapon()}</div>
+        ) : (
+          this.renderResult()
         )}
-
         {this.renderScore()}
       </div>
     );
   }
 
-  private renderResult(): React.ReactElement<any, string | React.JSXElementConstructor<any>>  {
-    return <div>
-      <div style={{ padding: "10px" }}>
-        <div>
-          PC Weapon:
-          <b style={{ color: "yellow" }}> {this.state.pcWeapon} </b>
+  private renderResult(): React.ReactElement<
+    any,
+    string | React.JSXElementConstructor<any>
+  > {
+    return (
+      <div>
+        <div style={{ padding: "10px" }}>
+          <div>
+            PC Weapon:
+            <b style={{ color: "yellow" }}> {this.state.pcWeapon} </b>
+          </div>
+          <div>
+            Your Weapon:&nbsp;
+            <b style={{ color: "yellow" }}>{this.state.selectedWeapon}</b>
+          </div>
+          <div>{this.state.result}</div>
         </div>
-        <div>
-          Your Weapon:&nbsp;
-          <b style={{ color: "yellow" }}>
-            {this.state.selectedWeapon}
-          </b>
-        </div>
-        <div>{this.state.result}</div>
+        <button
+          onClick={() => {
+            GameAPI.sendStartNewGame();
+            this.setState({
+              selectedWeapon: undefined,
+              startNewGame: true,
+            });
+          }}
+        >
+          Start New Game
+        </button>
       </div>
-      <button
-        onClick={() => {
-          GameAPI.sendStartNewGame();
-          this.setState({
-            selectedWeapon: undefined,
-            startNewGame: true,
-          });
-        } }
-      >
-        Start New Game
-      </button>
-    </div>;
+    );
   }
 
   private renderScore() {
-    return <div className="Score">
-      Score: &nbsp;
-      <span>
-        Win <b style={{ color: "green" }}>{this.state.wins} </b>
-      </span>
-      <span>
-        Lost <b style={{ color: "red" }}>{this.state.lost} </b>
-      </span>
-    </div>;
+    return (
+      <div className="Score">
+        Score: &nbsp;
+        <span>
+          Win <b style={{ color: "green" }}>{this.state.wins} </b>
+        </span>
+        <span>
+          Lost <b style={{ color: "red" }}>{this.state.lost} </b>
+        </span>
+      </div>
+    );
   }
 
   private renderSelectWeapon() {
-    return <Container key={'key-cont'}>
-      <b> Select your Weapon! </b>
-      <Row>
-        {this.weapons.map((item: IWeaponMap, index: number) => {
-          return (
-            <Col key={'key-col-' + index}>
-              <button key={'key-button-' + index}
-                onClick={() => {
-                  this.setState({ selectedWeapon: item });
-                  this.handleOnClickSelectWeapon(item);
-                } }
-              >
-                {item}
-              </button>
-            </Col>
-          );
-        })}
-      </Row>
-    </Container>;
+    return (
+      <Container key={"key-cont"}>
+        <b> Select your Weapon! </b>
+        <Row>
+          {this.weapons.map((item: IWeaponMap, index: number) => {
+            return (
+              <Col key={"key-col-" + index}>
+                <button
+                  key={"key-button-" + index}
+                  onClick={() => {
+                    this.setState({ selectedWeapon: item });
+                    this.handleOnClickSelectWeapon(item);
+                  }}
+                >
+                  {item}
+                </button>
+              </Col>
+            );
+          })}
+        </Row>
+      </Container>
+    );
   }
 
   private renderStartGameButton() {
-    return <button
-      onClick={() => {
-        GameAPI.sendStartNewGame();
-        this.setState({ startNewGame: true });
-      } }
-    >
-      Start New Game
-    </button>;
+    return (
+      <button
+        onClick={() => {
+          GameAPI.sendStartNewGame();
+          this.setState({ startNewGame: true });
+        }}
+      >
+        Start New Game
+      </button>
+    );
   }
 
   private isWeaponSelected() {
@@ -195,6 +200,6 @@ export default class Game extends React.Component<any, MyState> {
   }
 
   private isGameStarted() {
-    return (this.state.startNewGame || this.state.selectedWeapon !== undefined);
+    return this.state.startNewGame || this.state.selectedWeapon !== undefined;
   }
 }
