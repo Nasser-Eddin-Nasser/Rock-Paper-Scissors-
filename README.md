@@ -12,4 +12,4 @@ Follow the instructions below to run the game locally in the simplest and fastes
 1. Execute the command `docker-compose up`. 
 1. Go to localhost:3000 in your browser. 
 1. Now you should have Rock Paper Scissors running.
-1. To stop, execute the command `docker-compose down` 
+1. To stop, execute the command `docker-compose down`.
