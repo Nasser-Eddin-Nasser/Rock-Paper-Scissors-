@@ -1,0 +1,20 @@
+version: "3.9"
+ 
+services: 
+  backend: 
+    image: backend
+    build: 
+      context: ./backend
+
+    ports:
+       - "5005:5005" 
+
+
+  frontend:
+    image: frontend
+    build: 
+      context: ./frontend 
+    ports:
+        - "3000:3000"
+
+
